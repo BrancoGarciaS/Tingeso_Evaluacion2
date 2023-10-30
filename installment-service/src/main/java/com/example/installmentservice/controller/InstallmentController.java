@@ -38,6 +38,12 @@ public class InstallmentController {
         return ResponseEntity.ok(installments);
     }
 
+    @GetMapping("/getByRut/{rut}")
+    public ResponseEntity<List<Installment>> getByStudentRut(@PathVariable("rut") String rut){
+        List<Installment> installments = installmentService.getInstallmentByRut(rut);
+        return ResponseEntity.ok(installments);
+    }
+
     @PostMapping("/post")
     public ResponseEntity<Installment> save(@RequestBody Installment installment) {
         Installment installment1 = installmentService.saveData(installment);
@@ -54,4 +60,19 @@ public class InstallmentController {
         List<Installment> installments = installmentService.generateInstallments(jsonData);
         return ResponseEntity.ok(installments);
     }
+
+    /*
+    @PostMapping("/generate_installments")
+    public ResponseEntity<List<Installment>> generate_installments(@RequestParam Long id_student,
+                                                                   @RequestParam String rut,
+                                                                   @RequestParam Integer payment_type,
+                                                                   @RequestParam Integer tariff,
+                                                                   @RequestParam Integer num_installments){
+        List<Installment> installments = installmentService.generateInstallmentsByStudent(id_student, rut,
+                                                            payment_type, tariff, num_installments);
+        return ResponseEntity.ok(installments);
+    }
+
+     */
+
 }

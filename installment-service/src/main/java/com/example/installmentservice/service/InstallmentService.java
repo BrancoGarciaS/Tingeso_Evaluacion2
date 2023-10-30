@@ -27,13 +27,78 @@ public class InstallmentService {
         return installmentRepository.findById(id_installment).orElse(null);
     }
 
+    // Obtener cuotas por rut
+    public List<Installment> getInstallmentByRut(String rut) {
+        return installmentRepository.findInstallmentByRut(rut);
+    }
+
+    //public Installment updateInstallment(Installment installment)
+
     // Para guardar una cuota
     public Installment saveData(Installment cuota){
         return installmentRepository.save(cuota);
     }
 
+
+
     // Para generar listado de cuotas de un estudiante
     // HU3: Generar cuotas de pago.
+
+    /*
+    public List<Installment> generateInstallmentsByStudent(Long id_student, String rut, Integer payment_type,
+                                                           Integer tariff, Integer num_installments){
+        // Lista de cuotas:
+        List<Installment> cuotas = new ArrayList<>();
+        // en caso que se han generado anteriormente cuotas con ese id_student, no
+        // se van a generar mas
+        if(!getInstallmentByIdStudent(id_student).isEmpty() || getInstallmentByIdStudent(id_student).size() != 0){
+            return null;
+        }
+        // divido el arancel con descuento entre el numero de cuotas
+        float monto_por_cuota = (float) tariff / num_installments;
+        if(payment_type == 0){ // si paga al contado
+            Installment cuota = new Installment();
+            cuota.setInstallmentState(1); // se asume que el pago al contado se realiza inmediatamente
+            cuota.setPayment_date(LocalDate.now());
+            float pago_al_contado = 1500000 / 2;  // 50% del arancel
+            cuota.setPayment_amount(pago_al_contado);
+            cuota.setInterest_payment_amount(pago_al_contado);
+            cuota.setIdStudent(id_student); // le agrego el estudiante asociado
+            cuota.setRut_installment(rut); // rut del estudiante que pagó al contado
+            saveData(cuota); // guardo el pago en la base de datos
+            cuotas.add(cuota); // agrego el pago a la lista de cuotas del usuario
+            return cuotas;
+        }
+
+        for (int i = 0; i < num_installments; i++) {
+            // acá voy creando cada cuota en el momento
+            Installment cuota = new Installment();
+            // Calcula la fecha de vencimiento al dìa 10 de cada mes
+            int year = LocalDate.now().getYear();
+            int month = LocalDate.now().getMonthValue() + i + 1;
+            // Ajustar el año y el mes por si se sobrepasan los 12 meses del año actual
+            if(month > 12) {
+                year += (month - 1) / 12;
+                month = (month - 1) % 12 + 1;
+            }
+            // la fecha de vencimiento serìa el 10 de cada mes
+            LocalDate dueDate = LocalDate.of(year, month, 10);
+            // y la fecha de inicio de pago sería el 5 de cada mes
+            LocalDate startDate = LocalDate.of(year, month, 5);
+            cuota.setDue_date(dueDate);
+            cuota.setStart_date(startDate);
+            cuota.setInstallmentState(0); // 0 para pendiente (pago pendiente)
+            cuota.setPayment_amount(monto_por_cuota);
+            // inicialmente el monto original y de interés serán iguales
+            cuota.setInterest_payment_amount(cuota.getPayment_amount());
+            cuota.setIdStudent(id_student); // le agrego el estudiante asociado
+            cuota.setRut_installment(rut);
+            saveData(cuota); // guardo la cuota en la base de datos
+            cuotas.add(cuota); // agrego la cuota a la lista de cuotas del usuario
+        }
+        return cuotas;
+    }*/
+
     public List<Installment> generateInstallments(Map<String, Object> jsonData){
         // JSON: id_student, rut, payment_type, tariff, num_installments
         int id_student = (int) jsonData.get("id_student");
@@ -102,6 +167,8 @@ public class InstallmentService {
         interest(idStudent);
         return installmentRepository.findByIdStudent(idStudent);
     }
+
+
 
     // Para pagar una cuota (0: fracaso, 1: exito)
     // HU5: Registrar pagos de cuotas de arancel.
