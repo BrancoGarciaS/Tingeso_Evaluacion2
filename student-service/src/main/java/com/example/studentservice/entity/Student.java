@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Table(name = "students")
@@ -35,5 +37,6 @@ public class Student {
     private Integer num_installments; // numero de cuotas (si es 0, significa que será pago al contado)
     private Integer tariff; // arancel total a pagar considerando descuentos
     private Integer tuition; // matrícula
+    private LocalDate birthdate; // fecha de nacimiento
 
 }

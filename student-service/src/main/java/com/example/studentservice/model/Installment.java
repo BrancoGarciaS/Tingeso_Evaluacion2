@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Installment {
+    private Long id_installment; // atributo llave
     private String rut_installment;
     private Integer installmentState; // estado de la cuota, 0 pendiente, 1 pagado
     private float payment_amount;  // pago involucrado
