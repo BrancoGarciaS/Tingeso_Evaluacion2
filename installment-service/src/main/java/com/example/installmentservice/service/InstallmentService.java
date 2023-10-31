@@ -29,6 +29,7 @@ public class InstallmentService {
 
     // Obtener cuotas por rut
     public List<Installment> getInstallmentByRut(String rut) {
+        interest(rut);
         return installmentRepository.findInstallmentByRut(rut);
     }
 
@@ -164,7 +165,7 @@ public class InstallmentService {
     // HU4: Listar cuotas de pago de un estudiante y el estado de pago de cada cuota.
     public List<Installment> getInstallmentByIdStudent(Long idStudent) {
         // aplico los intereses necesarios
-        interest(idStudent);
+        //interest(idStudent);
         return installmentRepository.findByIdStudent(idStudent);
     }
 
@@ -210,9 +211,9 @@ public class InstallmentService {
         return interest;
     }
 
-    public void interest(Long id_student){
+    public void interest(String rut){
         LocalDate nowDate = LocalDate.now();
-        List<Installment> i = installmentRepository.findByIdStudent(id_student);
+        List<Installment> i = installmentRepository.findInstallmentByRut(rut);
         for(Installment ins : i){ // por cada cuota del estudiante
             // Si la cuota está sin pagar y la fecha máxima de pago ya pasó
             if(ins.getInstallmentState() == 0 && nowDate.isAfter(ins.getDue_date())){

@@ -24,6 +24,7 @@ public class InstallmentController {
         return ResponseEntity.ok(installments);
     }
 
+    /*
     @GetMapping("/get/{id}")
     public ResponseEntity<Installment> getById(@PathVariable("id") Long id) {
         Installment installment = installmentService.getInstallmentById(id);
@@ -32,13 +33,18 @@ public class InstallmentController {
         return ResponseEntity.ok(installment);
     }
 
+     */
+
+    /*
     @GetMapping("/getByStudent/{studentId}")
     public ResponseEntity<List<Installment>> getByStudentId(@PathVariable("studentId") Long id_student) {
         List<Installment> installments = installmentService.getInstallmentByIdStudent(id_student);
         return ResponseEntity.ok(installments);
     }
 
-    @GetMapping("/getByRut/{rut}")
+     */
+
+    @GetMapping("/get/{rut}")
     public ResponseEntity<List<Installment>> getByStudentRut(@PathVariable("rut") String rut){
         List<Installment> installments = installmentService.getInstallmentByRut(rut);
         return ResponseEntity.ok(installments);
