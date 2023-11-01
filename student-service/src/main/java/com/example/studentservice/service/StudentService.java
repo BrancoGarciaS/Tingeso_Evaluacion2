@@ -127,7 +127,7 @@ public class StudentService {
     }*/
 
     public List<Installment> getInstallmentsByRut(String rut) {
-        String url = "http://localhost:8002/installment/get/" + rut;
+        String url = "http://installment-service/installment/get/" + rut;
 
         ParameterizedTypeReference<List<Installment>> responseType = new ParameterizedTypeReference<List<Installment>>() {};
         ResponseEntity<List<Installment>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
@@ -146,7 +146,7 @@ public class StudentService {
         if(s1 != null){
             rut = s1.getRut();
         }
-        String url = "http://localhost:8003/exam/get/";
+        String url = "http://administration-service/exam/get/";
         List<Exam> exams = restTemplate.getForObject(url + rut, List.class);
         return exams;
     }
@@ -155,7 +155,7 @@ public class StudentService {
     public Installment saveInstallment(Long studentId, Installment installment) {
         installment.setIdStudent(studentId);
         HttpEntity<Installment> request = new HttpEntity<Installment>(installment);
-        String url = "http://localhost:8002/installment/post";
+        String url = "http://installment-service/installment/post";
         Installment new_ins = restTemplate.postForObject(url, request, Installment.class);
         return new_ins;
     }
@@ -174,14 +174,14 @@ public class StudentService {
         // Creo el cuerpo de la solicitud con el objeto jsonData
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(jsonData, headers);
 
-        String url = "http://localhost:8002/installment/generateInstallments";
+        String url = "http://installment-service/installment/generateInstallments";
         List<Installment> installments = restTemplate.postForObject(url, requestEntity, List.class);
         return installments;
     }
 
     // Para obtener la media de examenes
     public List<Map<String, Object>> getAVG_exams() {
-        String url = "http://localhost:8003/exam/getMeans";
+        String url = "http://administration-service/exam/getMeans";
         List<Map<String, Object>> exams = restTemplate.getForObject(url, List.class);
         return exams;
     }
