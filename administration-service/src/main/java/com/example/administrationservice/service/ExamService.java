@@ -157,7 +157,7 @@ public class ExamService {
     }
 
     public Student getStudentByRut(String rut) {
-        String url = "http://localhost:8001/student/get/";
+        String url = "http://student-service/student/get/";
         Student installments = restTemplate.getForObject(url + rut, Student.class);
         System.out.println("estudiante encontrado con exito");
         return installments;
@@ -165,7 +165,7 @@ public class ExamService {
 
     public List<Installment> getInstallmentsByRut(String rut) {
 
-        String url = "http://localhost:8002/installment/get/" + rut;
+        String url = "http://installment-service/installment/get/" + rut;
 
         ParameterizedTypeReference<List<Installment>> responseType = new ParameterizedTypeReference<List<Installment>>() {};
         ResponseEntity<List<Installment>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
