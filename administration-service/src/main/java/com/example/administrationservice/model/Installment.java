@@ -20,3 +20,4 @@ public class Installment {
     private LocalDate payment_date;  // fecha de pago
     private Long idStudent;  // conexión con entidad estudiante
 }
+

@@ -1,20 +1,15 @@
 package com.example.administrationservice.service;
-
-import com.example.administrationservice.config.RestTemplateConfig;
 import com.example.administrationservice.entity.Exam;
 import com.example.administrationservice.model.Installment;
 import com.example.administrationservice.model.Student;
 import com.example.administrationservice.repository.ExamRepository;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,23 +31,20 @@ public class ExamService {
     @Autowired
     RestTemplate restTemplate;
 
-    // Para obtener todos los examenes
+    // Para obtener todos los exámenes
     public List<Exam> getAll() {
         return examRepository.findAll();
     }
-
-    // Obtener una examen por id
-    /*
-    public Exam getExamById(Long id_exam) {
-        return examRepository.findById(id_exam).orElse(null);
-    }
-
-     */
 
     // Para guardar una examen
     public Exam saveData(Exam exam) {
         exam.setLoad_date(LocalDate.now());
         return examRepository.save(exam);
+    }
+
+    // Para borrar todos los exámenes
+    public void deleteAll(){
+        examRepository.deleteAll();
     }
 
     // Para calcular la media de examenes por rut
@@ -67,10 +59,12 @@ public class ExamService {
             examAverage.put("n_exams", obj[2]);
             mean_exams.add(examAverage);
         }
-
+        // para ordenar los promedios de exámenes
+        mean_exams.sort((a, b) -> Double.compare((Double) b.get("avg"), (Double) a.get("avg")));
         return mean_exams;
     }
 
+    // Para obtener exámenes por rut
     public List<Exam> getByRut(String rut){
         return examRepository.findByStudentRut(rut);
     }
@@ -87,7 +81,7 @@ public class ExamService {
         return examRepository.save(exam);
     }
 
-    // Para borrar los examenes (se usa cuando se calcula el promedio)
+    // Para borrar los exámenes (se usa cuando se calcula el promedio)
     public void deleteAllExams(){
         examRepository.deleteAll();
     }
@@ -156,13 +150,26 @@ public class ExamService {
         }
     }
 
+    // Para obtener estudiantes por rut
     public Student getStudentByRut(String rut) {
-        String url = "http://student-service/student/get/";
-        Student installments = restTemplate.getForObject(url + rut, Student.class);
-        System.out.println("estudiante encontrado con exito");
-        return installments;
+        String url = "http://student-service/student/get2/" + rut;
+
+        ParameterizedTypeReference<Student> responseType = new ParameterizedTypeReference<Student>() {};
+        ResponseEntity<Student> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            Student s = responseEntity.getBody();
+            if (s != null) {
+                System.out.println("Estudiante encontrado con éxito");
+            }
+            return s;
+        }
+        else{
+            return null;
+        }
     }
 
+    // Para generar cuotas por rut
     public List<Installment> getInstallmentsByRut(String rut) {
 
         String url = "http://installment-service/installment/get/" + rut;
@@ -175,23 +182,8 @@ public class ExamService {
             System.out.println("Cuotas obtenidas con éxito");
             return installments;
         }
-        /*
-        String url = "http://localhost:8002/installment/getByRut/";
-
-        List<Installment> installments = restTemplate.getForObject(url + rut, List.class);
-        System.out.println("cuotas obtenidas con exito");
-        return installments;
-
-         */
         return null;
     }
-
-    /*
-    public List<Map<String, Object>> saveExams_AVG() {
-        String url = "http://localhost:8001/student/saveExams";
-        List<Map<String, Object>> saved = restTemplate.getForObject(url, List.class);
-        return saved;
-    }*/
 
     // Para ver si una cuota está atrasada
     public boolean isLate(Installment inst){
@@ -244,8 +236,13 @@ public class ExamService {
                 report.put("num_installments_paid", 1);
                 report.put("late_installments", 0); // tiene 0 cuotas atrasadas porque pagó al contado
                 if(c.size() > 0){ // si tiene más de una cuota
+                    report.put("areGenerated", 1);
                     LocalDate d = c.get(0).getPayment_date();
                     report.put("last_payment", d); // la ultima fecha de pago y es unica
+                }
+                else{
+                    // en caso que no se han generado las cuotas
+                    report.put("areGenerated", 0);
                 }
                 report.put("num_installments_paid", 1); // se ha pagado una cuota
                 report.put("tariff_paid", 750000); // tarifa pagada
@@ -260,8 +257,11 @@ public class ExamService {
             float tariff_to_pay = 0; // monto a pagar
             float interes_tariff = 0; // arancel a pagar con intereses
             Integer later = 0; // cuotas atrasadas
+            if(c.size() == 0){ // en caso que no tenga las cuotas generadas
+                report.put("areGenerated", 0);
+            }
             if(c.size() > 0){
-
+                report.put("areGenerated", 1);
                 LocalDate last_payment = c.get(0).getPayment_date();
                 for(Installment installment_s : c){
                     // si la cuota está pagada se aumenta el contador
@@ -293,7 +293,6 @@ public class ExamService {
                 if (last_payment != null) { // Verifica si last_payment no es nulo
                     report.put("last_payment", last_payment);
                 }
-                report.put("last_payment", null);
             }
 
             report.put("interest_tariff", interes_tariff);
@@ -307,8 +306,5 @@ public class ExamService {
         }
         return report;
     }
-
-
-
 
 }

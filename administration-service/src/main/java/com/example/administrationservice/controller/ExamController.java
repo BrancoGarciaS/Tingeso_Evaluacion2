@@ -18,59 +18,52 @@ public class ExamController {
     @Autowired
     ExamService examService;
 
+    // Para obtener todos los exámenes
     @GetMapping("/get")
-    public ResponseEntity<List<Exam>> getAll() {
+    public List<Exam> getAll() {
         List<Exam> installments = examService.getAll();
-        if(installments.isEmpty()) { // si no hay examenes en la base de datos
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(installments);
+        return installments;
     }
 
-    /*
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Exam> getById(@PathVariable("id") Long id) {
-        Exam exam = examService.getExamById(id);
-        if(exam == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(exam);
-    }
-
-     */
-
+    // Para obtener un examen por rut
     @GetMapping("/get/{rut}")
     public ResponseEntity<List<Exam>> getByStudentId(@PathVariable("rut") String rut) {
-        List<Exam> installments = examService.getByRut(rut);
-        return ResponseEntity.ok(installments);
+        List<Exam> exams = examService.getByRut(rut);
+        return ResponseEntity.ok(exams);
     }
 
+    // Para crear un examen manualmente
     @PostMapping("/post")
     public ResponseEntity<Exam> save(@RequestBody Exam exam) {
         Exam installment1 = examService.saveData(exam);
         return ResponseEntity.ok(installment1);
     }
 
+    // Para obtener los promedios de exámenes
     @GetMapping("/getMeans")
-    public List<Map<String, Object>> calculateAVG(){
+    public List<Map<String, Object>> calculateAVG() {
         return examService.getMeanExams();
     }
 
+    // Para obtener el reporte de un estudiante (por rut)
     @GetMapping("/report/{rut}")
-    public Map<String, Object> createReportByRut(@PathVariable("rut") String rut){
+    public Map<String, Object> createReportByRut(@PathVariable("rut") String rut) {
         return examService.createReport(rut);
     }
 
+    // Para obtener las cuotas de un estudiante por rut
     @GetMapping("/installments/{rut}")
     public ResponseEntity<List<Installment>> getInstallmentsByRut(@PathVariable("rut") String rut) {
         Student student = examService.getStudentByRut(rut);
-        if(student == null)
+        if (student == null)
             return ResponseEntity.notFound().build();
         List<Installment> installments = examService.getInstallmentsByRut(rut);
         return ResponseEntity.ok(installments);
     }
 
+    // Para cargar excel y guardar los exámenes en la base de datos
     @PostMapping("/load_excel")
-    public String subirExcel(@RequestParam("file") MultipartFile file){
+    public String subirExcel(@RequestParam("file") MultipartFile file) {
         try {
             examService.saveFile(file);
             String filename = file.getOriginalFilename();
@@ -82,6 +75,19 @@ public class ExamController {
             String m = "Error, problema al cargar archivo";
             return m;
         }
+    }
+
+
+    // Para obtener estudiantes por rut
+    @GetMapping("/getStudentByRut/{rut}")
+    public Student buscarEstudiante(@RequestParam("rut") String rut){
+        return examService.getStudentByRut(rut);
+    }
+
+    // Para borrar todos los exámenes
+    @DeleteMapping("/delete")
+    public void deleteExams(){
+        examService.deleteAllExams();
     }
 
 }
