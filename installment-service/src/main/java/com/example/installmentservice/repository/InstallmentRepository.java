@@ -1,5 +1,4 @@
 package com.example.installmentservice.repository;
-
 import com.example.installmentservice.entity.Installment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,10 +1,16 @@
 package com.example.installmentservice.service;
 
 import com.example.installmentservice.entity.Installment;
+import com.example.installmentservice.model.Student;
 import com.example.installmentservice.repository.InstallmentRepository;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -12,10 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class InstallmentService {
     @Autowired
     InstallmentRepository installmentRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     // Para obtener todas las cuotas
     public List<Installment> getAll(){
@@ -40,21 +50,15 @@ public class InstallmentService {
         return installmentRepository.save(cuota);
     }
 
-
-
-    // Para generar listado de cuotas de un estudiante
-    // HU3: Generar cuotas de pago.
-
-    /*
-    public List<Installment> generateInstallmentsByStudent(Long id_student, String rut, Integer payment_type,
-                                                           Integer tariff, Integer num_installments){
+    public List<Installment> generate_Installments(Student s){
+        Long id_student = s.getId();
+        String rut = s.getRut();
+        Integer payment_type = s.getPayment_type();
+        Integer tariff = s.getTariff();
+        Integer num_installments = s.getNum_installments();
         // Lista de cuotas:
         List<Installment> cuotas = new ArrayList<>();
-        // en caso que se han generado anteriormente cuotas con ese id_student, no
-        // se van a generar mas
-        if(!getInstallmentByIdStudent(id_student).isEmpty() || getInstallmentByIdStudent(id_student).size() != 0){
-            return null;
-        }
+
         // divido el arancel con descuento entre el numero de cuotas
         float monto_por_cuota = (float) tariff / num_installments;
         if(payment_type == 0){ // si paga al contado
@@ -67,6 +71,7 @@ public class InstallmentService {
             cuota.setIdStudent(id_student); // le agrego el estudiante asociado
             cuota.setRut_installment(rut); // rut del estudiante que pagó al contado
             saveData(cuota); // guardo el pago en la base de datos
+            System.out.print("\ncuota creada");
             cuotas.add(cuota); // agrego el pago a la lista de cuotas del usuario
             return cuotas;
         }
@@ -96,10 +101,11 @@ public class InstallmentService {
             cuota.setRut_installment(rut);
             saveData(cuota); // guardo la cuota en la base de datos
             cuotas.add(cuota); // agrego la cuota a la lista de cuotas del usuario
+            System.out.print("\ncuota creada");
         }
         return cuotas;
-    }*/
 
+    }
     public List<Installment> generateInstallments(Map<String, Object> jsonData){
         // JSON: id_student, rut, payment_type, tariff, num_installments
         int id_student = (int) jsonData.get("id_student");
@@ -230,8 +236,50 @@ public class InstallmentService {
         }
     }
 
-    //
+    // Obtener estudiante por rut
+    public Student getStudentByRut(String rut) {
+        String url = "http://student-service/student/get2/" + rut;
+
+        ParameterizedTypeReference<Student> responseType = new ParameterizedTypeReference<Student>() {};
+        ResponseEntity<Student> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            Student s = responseEntity.getBody();
+            if (s != null) {
+                System.out.println("Estudiante encontrado con éxito");
+            }
+            return s;
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    // 0: error (estudiante no creado), 1: cuotas creadas, 2: ya creadas anteriormente
+    public int createInstallments(String rut){
+        System.out.print("rut dado " + rut);
+        Student s1 = getStudentByRut(rut);
+        System.out.print("\nprocesando\n");
+        if(s1 == null){
+            System.out.print("estudiante no encontrado");
+            return 0;
+        }
+        List<Installment> ins = getInstallmentByRut(rut);
+        // si tiene cuotas previamente creadas
+        if(s1 != null && ins != null && ins.size() > 0){
+            System.out.print("cuotas ya creadas");
+            return 2;
+        }
+        else {
+            // si no tiene cuotas y el estudiante existe, se crearan las cuotas
+            System.out.print("cuotas sin crear");
+            generate_Installments(s1);
+            return 1;
+        }
+    }
 
 
 
 }
+

@@ -1,14 +1,26 @@
 spring:
+  devtools:
+    restart:
+      aditional-paths: src/main/java
   application:
-    name: student-service
+    name: installment-service
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
   cloud:
     config:
       enabled: true
       uri: http://localhost:8081
   datasource:
+    plataform: postgres
+    driver-class-name: org.postgresql.Driver
+    dbname: bdT_2
     url: jdbc:postgresql://localhost:5432/bdT_2
     username: postgres
     password: 1234
-  jpa:
-    hibernate:
-      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB

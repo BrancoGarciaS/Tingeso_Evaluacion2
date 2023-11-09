@@ -1,10 +1,10 @@
 package com.example.installmentservice.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -27,6 +27,4 @@ public class Installment {
     private LocalDate start_date;  // fecha de inicio
     private LocalDate payment_date;  // fecha de pago
     private Long idStudent;  // conexión con entidad estudiante
-
-
 }
