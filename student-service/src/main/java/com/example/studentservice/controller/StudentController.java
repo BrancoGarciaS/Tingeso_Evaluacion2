@@ -17,6 +17,7 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
+    // Para obtener todos los estudiantes
     @GetMapping("/get")
     public ResponseEntity<List<Student>> getAll() {
         List<Student> students = studentService.getAll();
@@ -26,32 +27,20 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    /*
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Student> getById(@PathVariable("id") Long id) {
-        Student student = studentService.getStudentById(id);
-        if(student == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(student);
-    }
-     */
-
+    // Para guardar a un estudiante
     @PostMapping("/post")
     public ResponseEntity<Student> save(@RequestBody Student student) {
         Student s1 = studentService.saveData(student);
         return ResponseEntity.ok(s1);
     }
 
-    /*
-    @GetMapping("/installments/{studentId}")
-    public ResponseEntity<List<Installment>> getInstallments(@PathVariable("studentId") Long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if(student == null)
-            return ResponseEntity.notFound().build();
-        List<Installment> installments = studentService.getInstallments(studentId);
-        return ResponseEntity.ok(installments);
-    }*/
+    // Para guardar a un estudiante
+    @PostMapping("/post2")
+    public void save2(@RequestBody Student student){
+        studentService.saveData_2(student);
+    }
 
+    // Para obtener las cuotas de un estudiante por rut
     @GetMapping("/installments/{rut}")
     public ResponseEntity<List<Installment>> getInstallmentsByRut(@PathVariable("rut") String rut) {
         Student student = studentService.getStudentByRut(rut);
@@ -61,6 +50,7 @@ public class StudentController {
         return ResponseEntity.ok(installments);
     }
 
+    // Para obtener los exámenes por el id de un estudiante
     @GetMapping("/exams/{studentId}")
     public ResponseEntity<List<Exam>> getExams(@PathVariable("studentId") Long studentId) {
         Student student = studentService.getStudentById(studentId);
@@ -70,6 +60,7 @@ public class StudentController {
         return ResponseEntity.ok(exams);
     }
 
+    // Para guardar las cuotas de un estudiante por id
     @PostMapping("/saveInstallment/{studentId}")
     public ResponseEntity<Installment> saveBook(@PathVariable("studentId") Long studentId, @RequestBody Installment ins) {
         if(studentService.getStudentById(studentId) == null)
@@ -78,6 +69,7 @@ public class StudentController {
         return ResponseEntity.ok(ins_new);
     }
 
+    // Para obtener un estudiante por rut
     @GetMapping("/get/{rut}")
     public ResponseEntity<Student> getByRut(@PathVariable("rut") String rut) {
         Student student = studentService.getStudentByRut(rut);
@@ -86,15 +78,31 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    @GetMapping("/get2/{rut}")
+    public ResponseEntity<Student> getByRutStudent(@PathVariable("rut") String rut) {
+        Student student = studentService.getStudentByRut(rut);
+        if (student == null) {
+            // Devuelve una respuesta 200 con cuerpo nulo si el estudiante no se encuentra
+            return ResponseEntity.ok(null);
+        }
+        return ResponseEntity.ok(student);
+    }
+
+    // Para calcular el promedio de los exámenes de cada estudiante (rut)
     @GetMapping("/exams_avg")
     public List<Map<String, Object>> getExamsAVG(){
         return studentService.getAVG_exams();
     }
 
+    // Para guardar los promedios de exámenes de cada estudiante en la base de datos
     @GetMapping("/saveExams")
     public List<Map<String, Object>> saveExamsAVG(){
         return studentService.saveMean();
     }
 
-
+    // Para borrar estudiante por id
+    @DeleteMapping("/delete/{id}")
+    public void deleteStudent(@PathVariable Long id){
+        studentService.deleteStudent(id);
+    }
 }

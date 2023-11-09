@@ -3,6 +3,7 @@ package com.example.studentservice.service;
 import com.example.studentservice.entity.Student;
 import com.example.studentservice.model.Exam;
 import com.example.studentservice.model.Installment;
+
 import com.example.studentservice.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,18 +25,22 @@ public class StudentService {
     @Autowired
     RestTemplate restTemplate;
 
+    // Para borrar todos los estudiantes
     public List<Student> getAll() {
-        return studentRepository.findAll();
+        return studentRepository.findAllByOrderByIdAsc();
     }
 
+    // Para obtener estudiante por id
     public Student getStudentById(Long id) {
         return studentRepository.findById(id).orElse(null);
     }
 
+    // Para obtener estudiante por rut
     public Student getStudentByRut(String rut) {
         return studentRepository.findByRut(rut).orElse(null);
     }
 
+    // Para guardar un estudiante en la base de datos
     public Student saveData(Student student) {
         LocalDate now = LocalDate.now(); // fecha de ahora
         Period period = Period.between(student.getBirthdate(), now); // obtengo periodo entre fecha de nacimiento y hoy
@@ -72,8 +77,12 @@ public class StudentService {
         }
 
         Student studentNew = studentRepository.save(student);
-        generateInstallmentByStudent(studentNew);
+        //generateInstallmentByStudent(studentNew);
         return studentNew;
+    }
+
+    public void saveData_2(Student student) {
+        studentRepository.save(student);
     }
 
     // Para calcular descuento por tipo de escuela
@@ -119,13 +128,7 @@ public class StudentService {
         return tariff;
     }
 
-    /*
-    public List<Installment> getInstallments(Long studentId) {
-        String url = "http://localhost:8002/installment/getByStudent/";
-        List<Installment> installments = restTemplate.getForObject(url + studentId, List.class);
-        return installments;
-    }*/
-
+    // Para obtener las cuotas de un estudiante por rut
     public List<Installment> getInstallmentsByRut(String rut) {
         String url = "http://installment-service/installment/get/" + rut;
 
@@ -140,6 +143,7 @@ public class StudentService {
         return null;
     }
 
+    // Para obtener los examenes de un estudiante
     public List<Exam> getExams(Long studentId) {
         String rut = "";
         Student s1 = getStudentById(studentId);
@@ -151,7 +155,7 @@ public class StudentService {
         return exams;
     }
 
-
+    // Para guardar una cuota
     public Installment saveInstallment(Long studentId, Installment installment) {
         installment.setIdStudent(studentId);
         HttpEntity<Installment> request = new HttpEntity<Installment>(installment);
@@ -160,10 +164,10 @@ public class StudentService {
         return new_ins;
     }
 
-
+    // Para generar las cuotas de un estudiante
     public List<Installment> generateInstallmentByStudent(Student student){
         Map<String, Object> jsonData = new HashMap<>();
-        jsonData.put("id_student", student.getId()); // Reemplaza esto por la forma en que obtienes el ID del estudiante
+        jsonData.put("id_student", student.getId());
         jsonData.put("rut", student.getRut());
         jsonData.put("payment_type", student.getPayment_type());
         jsonData.put("tariff", student.getTariff());
@@ -246,45 +250,32 @@ public class StudentService {
                 System.out.print("Rut no encontrado:" + rut);
             }
         }
+        deleteAllExams(); // borro todos los exámenes
         return results;
     }
 
-
-
-    /*
-    public List<Installment> generateInstallmentsByStudent(Student student) {
-        String url = "http://localhost:8002/installment/generate_installments";
-
-        // Crea un objeto de solicitud de multipart/form-data
-        MultiValueMap<String, Object> request = new LinkedMultiValueMap<>();
-        request.add("id_student", student.getId());
-        request.add("rut", student.getRut());
-        request.add("payment_type", student.getPayment_type());
-        request.add("tariff", student.getTariff());
-        request.add("num_installments", student.getNum_installments());
-
-        // Define el encabezado de la solicitud
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Creo el cuerpo de la solicitud con los parámetros
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(request, headers);
-
-        List<Installment> installments = restTemplate.postForObject(url, requestEntity, List.class);
-        return installments;
+    // Para borrar un estudiante
+    public void deleteStudent(Long id){
+        if(getStudentById(id) != null){
+            studentRepository.deleteById(id);
+        }
     }
 
-     */
+    // Para borrar todos los exámenes
+    public void deleteAllExams() {
+        String url = "http://administration-service/exam/delete";
 
+        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 
-    /*
-    public Pet savePet(int studentId, Pet pet) {
-        pet.setStudentId(studentId);
-        HttpEntity<Pet> request = new HttpEntity<Pet>(pet);
-        Pet petNew = restTemplate.postForObject("http://localhost:8003/pet", request, Pet.class);
-        return petNew;
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // La solicitud DELETE fue exitosa
+            System.out.print("Exámenes borrados con éxito");
+        } else {
+            // Maneja el caso en el que la solicitud DELETE falla
+            System.out.print("Error");
+        }
     }
 
-     */
+
 
 }
