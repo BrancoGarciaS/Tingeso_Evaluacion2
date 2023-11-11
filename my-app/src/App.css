@@ -1,0 +1,309 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fondo {
+  text-align: center;
+
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: #fec9a3; /* Color de fondo que desees */
+  z-index: -1; /* Asegura que esté detrás del contenido principal */
+}
+
+.text_box{
+  background-color: #e73a3dbf;
+  border:2px solid #FF3D47;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  color: black;
+  
+  padding: 100px;
+}
+
+/*
+.main-content {
+  /*background-color: rgba(67, 161, 51, 0.6);  
+  padding: 30px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+}*/
+
+.main-content {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  min-height: 100vh; /* Establece el alto mínimo de la vista */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  padding: 30px;
+  margin-top: -30px;
+}
+
+.list-group-item {
+  margin-bottom: 10px; /* Agrega espacio entre elementos de la lista */
+}
+
+.contenedor{
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+
+  align-items: center; /* Centra verticalmente */
+  min-height: 100vh; /* Establece el alto mínimo de la vista */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  padding:30px;
+  margin-top: -30px;
+}
+
+/* Estilos para el contenedor de la cabecera */
+header {
+  background-color: #bc4b51; /* Color de fondo oscuro */
+   /* Espaciado interior en la parte superior e inferior */
+}
+
+/* Estilos para el enlace de la marca */
+.text-header {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 20px; /* Añade un margen a la derecha del enlace */
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Estilos para el enlace de la marca al pasar el mouse por encima */
+.text-header:hover  {
+  color: #66d7d1; /* Cambiar el color al azul principal al pasar el mouse por encima */
+}
+
+.button-container {
+  display: flex;
+  margin: 20px;
+}
+
+.btn:hover {
+  background-color: #66d7d1; /* Cambia el color de fondo al pasar el mouse por encima */
+}
+
+.sub-button {
+  margin: 5px;
+
+}
+
+.main-button.btn-light {
+  font-weight: bold; 
+  border: 3px solid white;
+  color: white;
+  background-color: #810b3a;
+  transition: background-color 0.3s;
+}
+
+.main-button.btn-light:hover {
+  background-color: black; 
+  color: white; 
+}
+
+.titulo{  /* Titulo lista de estudiantes */
+  color: black;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+}
+
+/* para componente lista de estudiantes*/
+.st_details_container{
+  display: flex;
+  padding: 20px;
+  justify-content: center; /* Centra horizontalmente */
+
+}
+
+.student-details{
+  color: black;
+  padding: 40px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+}
+
+.cabecera-tabla{
+  background-color:red;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  font-size: 18px;
+  
+}
+
+table tr:nth-child(3) {
+	color: #fff;
+	background-color: #000;
+}
+
+.entrada{
+  font-size: 23px;
+  text-decoration: underline;
+}
+.entrada:hover{
+  color:white;
+}
+
+
+.container_subida{
+  background-color: rgb(255, 148, 148);
+  border:2px solid #FF3D47;
+  padding: 30px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  font-size: 20px;
+}
+
+.container_subida:hover {
+  background-color: #ff7676;
+  color: white; 
+}
+
+.registro{
+  background-color: #ff7676;
+  padding: 20px;
+  width: 500px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  font-size: 20px;
+}
+
+/*para el register*/
+.entrada2{
+  font-size: 19px;
+  text-decoration: underline;
+}
+
+/*botones de subir excel, cargar promedio */
+.main-button2.btn-light {
+  font-weight: bold; 
+  border: 3px solid black;
+  color: black;
+  background-color: rgb(255, 239, 121);
+  transition: background-color 0.3s;
+}
+
+.main-button2.btn-light:hover {
+  background-color: #66d7d1;
+  color: black; 
+}
+
+.group-bottoms{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  font-size: 18px;
+  padding: 5px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.boton.list-group-item{
+  border:6px solid #d40711;
+  background-color:  #ff4438;
+  color: #001148;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 260px;
+  border-radius: 20px;
+  text-decoration: underline;
+}
+
+.boton.list-group-item:hover{
+  background-color: #fadf74;
+  color: #581845;
+  border: 6px solid #ff5733;
+}
+
+.boton2.list-group-item{
+
+  border:6px solid #d40711;
+  background-color: #ff525a;
+  color: #3d0404;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 260px;
+  border-radius: 20px;
+  
+  
+}
+
+.boton2.list-group-item:hover{
+  background-color: #fadf74;
+  color: #f3232d;
+  border: 6px solid #ff5733;
+}
+
+.titulo2.text-header{  /* Titulo de home */
+  color: #f3232d;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, cursive;
+  text-decoration: underline;
+  -webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 1px;
+  font-size: 40px;
+}
+
+.titulo2.text-header:hover{
+  color: #3d0404;
+}
+
+/*
+
+.my-custom-button:hover {
+  background-color: #66d7d1;
+  color: white;
+}
+
+*/
