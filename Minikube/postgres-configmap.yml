@@ -7,4 +7,8 @@ metadata:
 data:
   POSTGRES_DB_HOST: postgres
   #base de datos
-  POSTGRES_DB_TOP_EDUCATION: topeducationbd
+  POSTGRES_DB_ESTUDIANTES: topeducationestudiantes
+  #base de dato Cuotas
+  POSTGRES_DB_CUOTAS: topeducationcuotas
+  #base de dato Estudiantes
+  POSTGRES_DB_ADMINISTRACION: topeducationadministracion

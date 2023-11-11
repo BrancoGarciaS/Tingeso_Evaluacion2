@@ -31,11 +31,11 @@ spec:
                 configMapKeyRef:
                   name: postgres-config-map
                   key: POSTGRES_DB_HOST
-            - name: POSTGRES_DB_TOP_EDUCATION
+            - name: POSTGRES_DB_CUOTAS
               valueFrom:
                 configMapKeyRef:
                   name: postgres-config-map
-                  key: POSTGRES_DB_TOP_EDUCATION
+                  key: POSTGRES_DB_CUOTAS
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
